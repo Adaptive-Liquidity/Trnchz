@@ -1,0 +1,9 @@
+Orchestrator: bugfix mode.
+
+1) Reproduce and scope the defect (program / indexer / web / auth).
+2) Assign the owning subagent; minimal fix; no scope creep.
+3) Add regression test or indexer idempotency check as appropriate.
+4) security-reviewer for any money-path or auth change.
+5) Handoff template in PR description.
+
+Bug: <DESCRIBE>

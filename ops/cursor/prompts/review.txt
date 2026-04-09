@@ -1,0 +1,13 @@
+Orchestrator: review pass.
+
+Target: <BRANCH or PR>
+
+Assign security-reviewer for:
+- Signer and PDA correctness
+- Token program / mint / ATA alignment
+- Indexer projection vs chain (no settlement authority)
+
+Assign spec-guardian for:
+- Spec drift vs implementation
+
+Return: blocking vs non-blocking issues, linked to files/lines if possible.

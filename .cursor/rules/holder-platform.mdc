@@ -1,0 +1,27 @@
+---
+description: Holder v. Holder platform law — onchain truth, no timers, no wallet watcher, no offchain settlement.
+alwaysApply: true
+---
+
+# Holder v. Holder (repo rules)
+
+Read **`AGENTS.md`** first. Full rule text lives under **`ops/cursor/rules/`**.
+
+**Non-negotiables**
+
+- No timed gameplay; no wallet-balance watcher as game logic; no offchain winner selection.
+- Chain state is source of truth; indexer/DB is projection only.
+- No admin or agent custody of user funds; no offchain settlement.
+- Solana + Anchor; PDA custody; per-position tracked vaults; strict mint allowlist.
+
+**Process**
+
+- Plan before non-trivial implementation; ADRs in `docs/adr/` for architecture or rule changes.
+- Money-path changes need negative tests; use orchestrator handoff template in `ops/cursor/orchestrator/HANDOFF_TEMPLATE.md`.
+- Delegate via specialist definitions in `ops/cursor/subagents/`.
+
+**Rule files (read `ops/cursor/rules/`)**
+
+- `00-platform-charter.md` … `06-no-timer-no-offchain-settlement.md`
+
+**Skills** (procedures): `ops/cursor/skills/*/SKILL.md`

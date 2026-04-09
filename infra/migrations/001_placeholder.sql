@@ -1,0 +1,3 @@
+-- Postgres schema will be defined when indexer projection is implemented (Phase 2+).
+-- Use idempotent migrations only; chain remains source of truth.
+-- Placeholder file so `infra/migrations/` exists in the repo.

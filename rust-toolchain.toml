@@ -1,0 +1,6 @@
+# Pinned for Anchor 0.30.x compatibility and reproducible builds.
+# See docs/TOOLCHAIN.md for Solana CLI / anchor-cli versions to install locally.
+[toolchain]
+channel = "1.85.0"
+components = ["rustfmt", "clippy"]
+profile = "minimal"

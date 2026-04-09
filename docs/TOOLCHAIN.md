@@ -1,0 +1,137 @@
+# Toolchain pins (Anchor 0.30.1)
+
+These versions are chosen for **Anchor 0.30.1** compatibility and future **verifiable builds**. Install matching CLI tools on developer machines and CI.
+
+
+| Component  | Version     | Notes                                                                                            |
+| ---------- | ----------- | ------------------------------------------------------------------------------------------------ |
+| Rust       | **1.85.0**  | `[rust-toolchain.toml](../rust-toolchain.toml)` at repo root (host `cargo build` / `cargo test`) |
+| Solana CLI | **1.18.26** | Must match the **platform-tools** / `cargo-build-sbf` toolchain used by Anchor for BPF builds    |
+| Anchor CLI | **0.30.1**  | Use **AVM** (recommended): see below                                                             |
+| Node.js    | **>=20**    | For `apps/web`, `apps/indexer`, packages                                                         |
+
+
+For a **step-by-step WSL2 + Ubuntu** setup (full `anchor build` + IDL without Windows-only flags), use `[docs/runbooks/wsl-anchor-setup.md](runbooks/wsl-anchor-setup.md)` and run `[scripts/wsl-toolchain-check.sh](../scripts/wsl-toolchain-check.sh)` inside WSL after installing tools.
+
+## Install Anchor via AVM (recommended)
+
+[Anchor documents AVM](https://www.anchor-lang.com/docs/installation) as the supported installer; recent AVM builds include **Windows (x86_64-pc-windows-msvc)**.
+
+```bash
+cargo install --git https://github.com/coral-xyz/anchor avm --locked --force
+avm install 0.30.1
+avm use 0.30.1
+anchor --version   # anchor-cli 0.30.1
+```
+
+If multiple `anchor` binaries exist, ensure `~/.cargo/bin` (or the AVM shim) is first on `PATH`.
+
+### Windows note: `HOME`
+
+Some Anchor/Solana tools (`cargo-build-sbf`, used by `**anchor build**` and `**anchor test**`) expect the `**HOME**` environment variable. On Windows it is often **unset**, which yields:
+
+`Can't get home directory path: environment variable not found`
+
+**In the same PowerShell window**, before `anchor`, set `HOME` to your profile directory. Prefer a **single line** so `HOME` is definitely set for the `anchor` process:
+
+```powershell
+$env:HOME = $env:USERPROFILE; anchor build
+$env:HOME = $env:USERPROFILE; anchor test
+```
+
+Run these from the **repo root** (`trenchz`, where `Anchor.toml` lives), not only from `programs/holder_arena`.
+
+**If it still fails:** your session may not be picking up a profile change, or `anchor` was started from a shortcut that does not load the profile. Use the repo helper (always sets `HOME` then runs `anchor`):
+
+```powershell
+cd C:\Users\Benna\Downloads\trenchz
+.\scripts\anchor-windows.ps1 build
+.\scripts\anchor-windows.ps1 test
+```
+
+**Persistent `HOME` for your Windows user** (new terminals and GUI apps see it after you **close and reopen** the terminal):
+
+```powershell
+[Environment]::SetEnvironmentVariable('HOME', $env:USERPROFILE, 'User')
+```
+
+Verify in a **new** PowerShell window: `echo $env:HOME` should print your user folder (e.g. `C:\Users\Benna`).
+
+## Verify
+
+```bash
+rustc --version    # 1.85.0
+solana --version   # 1.18.26
+anchor --version   # 0.30.1
+```
+
+## Program build: two lanes
+
+
+| Lane                   | Command                                                                                       | Use when                                                                |
+| ---------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| **Fast (host)**        | `cargo test -p holder_arena` / `cargo build --manifest-path programs/holder_arena/Cargo.toml` | Day-to-day Rust work, no IDL                                            |
+| **Anchor (BPF + IDL)** | `anchor build`                                                                                | Emit `target/deploy/*.so`, `target/idl/hvh.json`, `target/types/hvh.ts` |
+
+
+`[Anchor.toml](../Anchor.toml)` pins `[toolchain] anchor_version = "0.30.1"` and `[workspace] types = "packages/sdk/src/generated"` so TypeScript types land next to the SDK.
+
+**IDL / types file names** follow the `#[program]` module name (`hvh`), not the crate name: `**hvh.json`** / `**hvh.ts**`.
+
+### Windows + `cargo-build-sbf`
+
+Solana **1.18** ships a `cargo-build-sbf` Rust toolchain (~**1.75**) that is older than host Rust **1.85**. Fresh `crates.io` resolutions may pull crates that require **newer** rustc or **Cargo lockfile v4** features than that toolchain supports.
+
+This repo pins transitive versions in `[programs/holder_arena/Cargo.toml](../programs/holder_arena/Cargo.toml)` (e.g. `blake3`, `proc-macro-crate`) and keeps `[programs/holder_arena/Cargo.lock](../programs/holder_arena/Cargo.lock)` compatible with **lockfile v3** where needed for `cargo-build-sbf`.
+
+If `**anchor build`** fails with `**lock file version 4 requires -Znext-lockfile-bump**`, the lockfile was regenerated by a **new** host Cargo. Re-write it with the **Solana-managed** toolchain (Cargo 1.75), then commit the result:
+
+```powershell
+rustup run solana cargo generate-lockfile --manifest-path programs/holder_arena/Cargo.toml
+```
+
+Requires `rustup toolchain list` to include `**solana**` (installed with Solana CLI). The first line of `Cargo.lock` should show `**version = 3**`.
+
+`[programs/holder_arena/Cargo.toml](../programs/holder_arena/Cargo.toml)` pins several crates so `**cargo-build-sbf` (~rustc 1.75)** and **Windows SBF** keep working — e.g. `**borsh`** (via `**[build-dependencies]**` only, to avoid a `borsh` name clash with `anchor_lang::prelude::*`), `**unicode-segmentation**`, `**indexmap**`, and `**serde` / `serde_json**` (older `serde` avoids `serde_core` + `include!(.../private.rs)` issues on Windows extended paths).
+
+### Windows: full `anchor build` vs IDL
+
+**Anchor 0.30.1** + `**anchor-syn` 0.30.1** still call `**Span::source_file()`**, which newer `**proc-macro2**` (and newer host `proc_macro`) no longer provide. On **Windows** with **Rust 1.85+**, the **IDL build step** can fail even when the **BPF `.so` build** succeeds.
+
+**Practical workflow on Windows:**
+
+1. Build the program **without** generating IDL:
+  ```powershell
+   cd C:\Users\Benna\Downloads\trenchz
+   $env:HOME = $env:USERPROFILE
+   anchor build --no-idl
+  ```
+   Or: `npm run anchor:build:no-idl`
+2. When instructions or types change and you need a **fresh** `target/idl/hvh.json` / `target/types/hvh.ts`, run a **full** `anchor build` (or `anchor idl build` per Anchor docs) from **WSL2** or **Linux CI**, then commit the artifacts; or upgrade Anchor when this repo moves past 0.30.1.
+3. `npm run anchor:idl:sync` only **copies** existing files from `target/` into `[packages/sdk](../packages/sdk)` — it does not regenerate IDL.
+
+If `anchor build` fails for other reasons on Windows, **WSL2** or **Linux CI** with the same Solana + Anchor versions remains the supported fallback; then run `npm run anchor:idl:sync` after a successful full build there.
+
+## SDK wiring
+
+After `anchor build` + `npm run anchor:idl:sync`, the SDK exposes:
+
+- `HVH_PROGRAM_ID`, `HVH_IDL` from `[packages/sdk/src/program.ts](../packages/sdk/src/program.ts)`
+- Types from `[packages/sdk/src/generated/hvh.ts](../packages/sdk/src/generated/hvh.ts)`
+
+Root scripts:
+
+```bash
+npm run anchor:build
+npm run anchor:idl:sync
+# or
+npm run anchor:artifacts
+```
+
+## `anchor verify` (release)
+
+Behavior is **version-specific**. Stay on **Anchor 0.30.1** for this repo and follow **0.30.x** docs for verifiable deploy/verify. **Anchor 0.32+** changed `anchor verify` (e.g. `solana-verify`); do not assume the same flow until you intentionally upgrade the whole stack.
+
+See `[docs/runbooks/release-verification.md](runbooks/release-verification.md)`.
+
+Replace the **program id** in `Anchor.toml` and `programs/holder_arena/src/lib.rs` before any real deployment (`solana-keygen`, multisig, etc.).

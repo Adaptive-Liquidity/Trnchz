@@ -1,0 +1,32 @@
+{
+  "name": "holder-v-holder",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev -w web",
+    "dev:indexer": "npm run dev -w indexer",
+    "dev:legacy": "npm run dev -w legacy-trenchz-ui",
+    "preview:legacy": "npm run preview -w legacy-trenchz-ui",
+    "build:web": "npm run build -w web",
+    "build:packages": "npm run build -w @holder-v-holder/shared -w @holder-v-holder/sdk",
+    "build:indexer": "npm run build -w indexer",
+    "build:legacy": "npm run build -w legacy-trenchz-ui",
+    "build": "npm run build:packages && npm run build:web && npm run build:indexer",
+    "anchor:build": "anchor build",
+    "anchor:build:no-idl": "anchor build --no-idl",
+    "anchor:idl:sync": "node scripts/sync-idl.mjs",
+    "anchor:artifacts": "npm run anchor:build && npm run anchor:idl:sync",
+    "anchor:artifacts:no-idl": "npm run anchor:build:no-idl && npm run anchor:idl:sync",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  },
+  "dependencies": {
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  }
+}

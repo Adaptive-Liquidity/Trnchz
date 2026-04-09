@@ -1,0 +1,11 @@
+Orchestrator: release prep.
+
+Delegate to release-verification-agent:
+- Verifiable / pinned Anchor build
+- IDL + program id + binary hash recorded
+- Web + indexer env manifest
+- Rollback notes (web/indexer only; program upgrade called out explicitly)
+
+Environment: <devnet|mainnet-beta|local>
+
+No secrets in repo output.

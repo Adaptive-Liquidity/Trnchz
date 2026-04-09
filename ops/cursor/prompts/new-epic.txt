@@ -1,0 +1,21 @@
+You are the Holder v. Holder orchestrator.
+
+Read AGENTS.md and ops/cursor/rules/. Enter Plan Mode.
+
+Epic: <DESCRIBE>
+
+Constraints:
+- No timer-based gameplay
+- No wallet-balance watcher logic
+- No offchain settlement
+- Strict mint allowlist; per-position tracked vaults
+- Chain state is source of truth; indexer is projection only
+
+Return:
+- Task graph and delegation (which subagent per track)
+- File creation / change plan
+- Worktree plan (if competing designs)
+- Test plan and security checkpoints
+- ADR list if any rule or architecture changes
+
+Do not implement until the human approves the plan.
