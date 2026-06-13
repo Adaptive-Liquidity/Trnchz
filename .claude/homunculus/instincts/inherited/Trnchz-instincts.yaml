@@ -1,0 +1,279 @@
+# Instincts generated from https://github.com/Adaptive-Liquidity/Trnchz
+# Generated: 2026-06-13T05:08:46.355Z
+# Version: 2.0
+# NOTE: This file supplements (does not replace) any existing curated instincts.
+# High-confidence manually curated instincts should be preserved alongside these.
+
+---
+id: Trnchz-commit-length
+trigger: "when writing a commit message"
+confidence: 0.6
+domain: git
+source: repo-analysis
+source_repo: https://github.com/Adaptive-Liquidity/Trnchz
+---
+
+# Trnchz Commit Length
+
+## Action
+
+Write moderate-length commit messages (~61 characters)
+
+## Evidence
+
+- Average commit message length: 61 chars
+- Based on 1 commits
+
+---
+id: Trnchz-naming-files
+trigger: "when creating a new file"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/Adaptive-Liquidity/Trnchz
+---
+
+# Trnchz Naming Files
+
+## Action
+
+Use camelCase naming convention
+
+## Evidence
+
+- Analyzed file naming patterns in repository
+- Dominant pattern: camelCase
+
+---
+id: Trnchz-import-relative
+trigger: "when importing modules"
+confidence: 0.75
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/Adaptive-Liquidity/Trnchz
+---
+
+# Trnchz Import Relative
+
+## Action
+
+Use relative imports for project files
+
+## Evidence
+
+- Import analysis shows relative import pattern
+- Example: import { x } from '../lib/x'
+
+---
+id: Trnchz-export-style
+trigger: "when exporting from a module"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/Adaptive-Liquidity/Trnchz
+---
+
+# Trnchz Export Style
+
+## Action
+
+Prefer named exports
+
+## Evidence
+
+- Export pattern analysis
+- Dominant style: named
+
+---
+id: Trnchz-test-separate
+trigger: "when writing tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/Adaptive-Liquidity/Trnchz
+---
+
+# Trnchz Test Separate
+
+## Action
+
+Place tests in the tests/ or __tests__/ directory, mirroring src structure
+
+## Evidence
+
+- Separate test directory pattern detected
+- Tests live in dedicated test folders
+
+---
+id: trnchz-instinct-file-naming-camelcase
+trigger: "When creating a new file in the repository"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: Adaptive-Liquidity/Trnchz
+---
+
+# Trnchz Instinct File Naming Camelcase
+
+## Action
+
+Name the file using camelCase
+
+## Evidence
+
+- Pattern in namingConventions.files
+
+---
+id: trnchz-instinct-function-naming-camelcase
+trigger: "When defining a new function"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: Adaptive-Liquidity/Trnchz
+---
+
+# Trnchz Instinct Function Naming Camelcase
+
+## Action
+
+Name the function using camelCase
+
+## Evidence
+
+- Pattern in namingConventions.functions
+
+---
+id: trnchz-instinct-class-naming-pascalcase
+trigger: "When defining a new class"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: Adaptive-Liquidity/Trnchz
+---
+
+# Trnchz Instinct Class Naming Pascalcase
+
+## Action
+
+Name the class using PascalCase
+
+## Evidence
+
+- Pattern in namingConventions.classes
+
+---
+id: trnchz-instinct-constant-naming-screaming-snake-case
+trigger: "When declaring a constant"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: Adaptive-Liquidity/Trnchz
+---
+
+# Trnchz Instinct Constant Naming Screaming Snake Case
+
+## Action
+
+Name the constant using SCREAMING_SNAKE_CASE
+
+## Evidence
+
+- Pattern in namingConventions.constants
+
+---
+id: trnchz-instinct-import-style-relative
+trigger: "When importing modules"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: Adaptive-Liquidity/Trnchz
+---
+
+# Trnchz Instinct Import Style Relative
+
+## Action
+
+Use relative import paths
+
+## Evidence
+
+- Pattern in importStyle
+
+---
+id: trnchz-instinct-export-style-named
+trigger: "When exporting modules or functions"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: Adaptive-Liquidity/Trnchz
+---
+
+# Trnchz Instinct Export Style Named
+
+## Action
+
+Use named exports
+
+## Evidence
+
+- Pattern in exportStyle
+
+---
+id: trnchz-instinct-monorepo-structure-apps-folder
+trigger: "When adding a new application to the repository"
+confidence: 0.9
+domain: architecture
+source: repo-analysis
+source_repo: Adaptive-Liquidity/Trnchz
+---
+
+# Trnchz Instinct Monorepo Structure Apps Folder
+
+## Action
+
+Place it inside the 'apps' folder
+
+## Evidence
+
+- apps folder in folderStructure
+- configFiles in apps/*
+
+---
+id: trnchz-instinct-tests-in-separate-location
+trigger: "When adding or updating tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: Adaptive-Liquidity/Trnchz
+---
+
+# Trnchz Instinct Tests In Separate Location
+
+## Action
+
+Place test files in a separate location from source files
+
+## Evidence
+
+- testLocation: separate in folderStructure
+
+---
+id: trnchz-instinct-commit-format-freeform
+trigger: "When writing a commit message"
+confidence: 0.7
+domain: git
+source: repo-analysis
+source_repo: Adaptive-Liquidity/Trnchz
+---
+
+# Trnchz Instinct Commit Format Freeform
+
+## Action
+
+Use a freeform commit message without a strict prefix, but often start with a capitalized verb (e.g., 'Bump', 'Fix', 'Update')
+
+## Evidence
+
+- commits.type: freeform
+- Example: 'Bump the npm_and_yarn group across 1 directory with 4 updates'
+
